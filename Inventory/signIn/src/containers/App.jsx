@@ -1,16 +1,21 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {onSignOut} from "../actions/signInAction";
 import SignIn from "./SignIn";
 import { Button } from "@material-ui/core";
 
-function App({isSignIn, email, password, onon}) {
+function App({isSignIn, token, onSignOut}) {
+  const [storageToken, setToken] = useState("");
+  useEffect(() => {
+    if(window.localStorage.getItem('token')){
+      setToken(window.localStorage.getItem('token'));
+    }
+  }, [storageToken]);
   return isSignIn ? (
     <>
-      <p>{email}</p>
-      <p>{password}</p>
-      <Button variant="contained" color="secondary" onClick={onon}>로그아웃</Button>
+      <p>{storageToken}</p>
+      <Button variant="contained" color="secondary" onClick={onSignOut}>로그아웃</Button>
     </>
   ) : (
     <SignIn />
@@ -20,13 +25,12 @@ function App({isSignIn, email, password, onon}) {
 function mapStateToProps(state){
   return {
     isSignIn: state.signIn.isSignIn,
-    email: state.signIn.email,
-    password: state.signIn.password
+    token: state.signIn.token,
   }
 }
 
 function mapDispatchToProps(dispatch){
-  return bindActionCreators({onon: onSignOut}, dispatch)
+  return bindActionCreators({onSignOut}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

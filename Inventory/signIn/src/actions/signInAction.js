@@ -1,9 +1,8 @@
-export function onSignIn(email, password) {
+export function onSignIn(token) {
   return {
     type: "SIGNIN",
     isSignIn: true,
-    email,
-    password
+    token
   };
 }
 

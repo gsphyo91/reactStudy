@@ -3,20 +3,17 @@ export default function(state, action){
     case 'SIGNIN':
       return {
         isSignIn: true,
-        email: action.email,
-        password: action.password
+        token: action.token
       }
     case 'SIGNOUT':
       return {
         isSignIn: false,
-        email: "",
-        password: ""
+        token: ""
       }
     default:
       return {
         isSignIn: false,
-        email: "",
-        password: ""
+        token: ""
       }
   }
 }

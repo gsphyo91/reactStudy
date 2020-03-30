@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-// import { bindActionCreators } from "redux";
-// import { onSignIn } from "../actions/signInAction"
+import { bindActionCreators } from "redux";
+import { onSignIn } from "../actions/signInAction"
 
-import { requestAPI } from "../Components/api"
+import { requestAPI } from "../Components/api";
 
 import { Container, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   wrapForm: {}
 }));
 
-const SignIn = () => {
+const SignIn = ({onSignIn}) => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,17 +31,19 @@ const SignIn = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log(email, password);
-    // onSignIn(email, password);
-    try{
-      const result = await requestAPI.signIn(email, password);
-      console.log(result);
-    }catch(err){
+    const encodePassword = Buffer.from(password, `utf8`).toString("base64");
+
+    try {
+      const { data } = await requestAPI.signIn(email, encodePassword);
+      console.log(data);
+      const localStorage = window.localStorage;
+      localStorage.setItem('token', data);
+      onSignIn(data);
+    } catch (err) {
       console.log(err);
     }
-    
   };
 
   return (
@@ -75,14 +77,8 @@ const SignIn = () => {
           autoComplete="current-password"
           value={password}
           onChange={handlePasswordChange}
-
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
+        <Button type="submit" variant="contained" color="primary" fullWidth>
           Sign In
         </Button>
       </form>
@@ -90,9 +86,9 @@ const SignIn = () => {
   );
 };
 
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators({ onSignIn: onSignIn }, dispatch);
-// }
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ onSignIn }, dispatch);
+}
 
-// export default connect(null, mapDispatchToProps)(SignIn);
-export default connect()(SignIn);
+export default connect(null, mapDispatchToProps)(SignIn);
+// export default connect()(SignIn);

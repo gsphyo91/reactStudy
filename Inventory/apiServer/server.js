@@ -9,8 +9,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/signIn', (req, res) => {
-  console.log(req.body);
-  res.status(200).send("200");
+  console.log(req.body.headers);
+  const decodePassword = Buffer.from(req.body.headers.password, 'base64').toString('utf8');
+  console.log(decodePassword);
+  res.status(200).send("token");
 });
 
 app.listen(port, () => {
