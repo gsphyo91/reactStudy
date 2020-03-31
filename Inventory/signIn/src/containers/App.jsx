@@ -1,36 +1,56 @@
-import React, {useState, useEffect} from "react";
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {onSignOut} from "../actions/signInAction";
+import React, { useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { onSignIn, onSignOut } from "../actions/signInAction";
+import { requestAPI } from "../Components/api";
+
 import SignIn from "./SignIn";
+
 import { Button } from "@material-ui/core";
 
-function App({isSignIn, token, onSignOut}) {
-  const [storageToken, setToken] = useState("");
-  useEffect(() => {
-    if(window.localStorage.getItem('token')){
-      setToken(window.localStorage.getItem('token'));
+function App() {
+  const dispatch = useDispatch();
+  const isSignIn = useSelector(state => state.signIn.isSignIn);
+  const token = useSelector(state => state.signIn.token);
+
+  const getAuth = useCallback(async (token) => {
+    try {
+      const { status } = await requestAPI.auth(token);
+      if (status === 200) {
+        dispatch(onSignIn(token));
+      } else {
+        window.localStorage.removeItem('token');
+        dispatch(onSignOut());
+      }
+    } catch{
+      window.localStorage.removeItem('token');
+      dispatch(onSignOut());
     }
-  }, [storageToken]);
+
+
+  }, [dispatch]);
+
+  const handleSignOut = () => {
+    window.localStorage.removeItem('token');
+    dispatch(onSignOut());
+  };
+
+  useEffect(() => {
+    const localToken = window.localStorage.getItem('token');
+    if (localToken !== null) {
+      getAuth(localToken);
+    } else {
+      dispatch(onSignOut());
+    }
+  }, [getAuth, dispatch]);
+
   return isSignIn ? (
     <>
-      <p>{storageToken}</p>
-      <Button variant="contained" color="secondary" onClick={onSignOut}>로그아웃</Button>
+      <p>{token}</p>
+      <Button variant="contained" color="secondary" onClick={handleSignOut}>로그아웃</Button>
     </>
   ) : (
-    <SignIn />
-  );
+      <SignIn />
+    );
 }
 
-function mapStateToProps(state){
-  return {
-    isSignIn: state.signIn.isSignIn,
-    token: state.signIn.token,
-  }
-}
-
-function mapDispatchToProps(dispatch){
-  return bindActionCreators({onSignOut}, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

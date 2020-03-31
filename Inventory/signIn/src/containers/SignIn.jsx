@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
 import { onSignIn } from "../actions/signInAction"
 
 import { requestAPI } from "../Components/api";
@@ -18,7 +17,8 @@ const useStyles = makeStyles(theme => ({
   wrapForm: {}
 }));
 
-const SignIn = ({onSignIn}) => {
+const SignIn = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,10 +37,9 @@ const SignIn = ({onSignIn}) => {
 
     try {
       const { data } = await requestAPI.signIn(email, encodePassword);
-      console.log(data);
       const localStorage = window.localStorage;
       localStorage.setItem('token', data);
-      onSignIn(data);
+      dispatch(onSignIn(data));
     } catch (err) {
       console.log(err);
     }
@@ -86,9 +85,4 @@ const SignIn = ({onSignIn}) => {
   );
 };
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ onSignIn }, dispatch);
-}
-
-export default connect(null, mapDispatchToProps)(SignIn);
-// export default connect()(SignIn);
+export default SignIn;

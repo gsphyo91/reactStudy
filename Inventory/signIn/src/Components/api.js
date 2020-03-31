@@ -11,5 +11,11 @@ export const requestAPI = {
         email,
         password
       }
+    }),
+  auth: (token) =>
+    api.get('/auth', {
+      headers: {
+        token
+      }
     })
 };
