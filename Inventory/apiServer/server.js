@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const secretObj = require("./config/jwt");
 
 const app = express();
-const port = 3001;
+const PORT = 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -43,6 +43,8 @@ app.post("/signIn", (req, res) => {
   res.status(200).send(token);
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+// react-blog-1
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
