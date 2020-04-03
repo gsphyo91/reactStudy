@@ -1,18 +1,23 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 
-import { Logout } from "../actions/logged";
+// import PostList from "./blog/PostList";
+import PostEditor from "./blog/PostEditor";
+
+// import { Logout } from "../actions/logged";
 
 const Main = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const onLogout = () => {
-    dispatch(Logout());
-  }
+  // const onLogout = () => {
+  //   dispatch(Logout());
+  // }
 
   return (
     <>
-      <button onClick={onLogout}>Logout</button>
+      {/* <button onClick={onLogout}>Logout</button> */}
+      {/* <PostList /> */}
+      <PostEditor />
     </>
   )
 }
