@@ -18,8 +18,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const blogUserRouter = require("./routers/blog/user");
-app.use('/blog/user', blogUserRouter);
-
+const blogPostRouter = require("./routers/blog/post");
+app.use("/blog/user", blogUserRouter);
+app.use("/blog/post", blogPostRouter);
 
 app.get("/auth", (req, res) => {
   const token = req.headers.token;

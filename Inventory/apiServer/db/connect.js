@@ -11,6 +11,7 @@ module.exports = () => {
 
   mongoose.connect(mongoObj.url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: true
   });
 };
