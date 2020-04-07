@@ -1,55 +1,111 @@
-import React, { useState } from "react";
-import {Link, useHistory} from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { Layout, Typography, Button, Input, Form } from "antd";
 
-import { post } from "../../apis/api"
+import { post } from "../../apis/api";
+
+const { Content } = Layout;
+const { Title } = Typography;
+const { TextArea } = Input;
 
 const PostEditor = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const history = useHistory();
+  const location = useLocation();
+  const [path] = useState(location.pathname.split('/'));
+  const wrapper = useRef(null);
 
   const handleTitleChenge = (e) => {
     setTitle(e.target.value);
   }
 
   const blockEnterKey = (e) => {
-    if(e.key === 'Enter') e.preventDefault();
+    if (e.key === 'Enter') e.preventDefault();
   }
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
   }
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log(title, content);
-    newPost(title, content);
+  const onFinish = () => {
+    if (path[1] === 'newpost') {
+      newPost(title, content);
+    } else {
+      updatePost(path[2], title, content);
+    }
   }
 
   const newPost = async (title, content) => {
-    try{
-      const result = await post.newPost(title, content);
-      console.log(result);
+    try {
+      await post.newPost(title, content);
       history.push("/");
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   }
 
+  const getPost = async (id) => {
+    let postInfo;
+    try {
+      ({ data: { results: postInfo } } = await post.detailPost(id));
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setTitle(postInfo.title);
+      setContent(postInfo.content);
+    }
+  }
+
+  const updatePost = async (id, title, content) => {
+    try {
+      await post.updatePost(id, title, content);
+      history.push("/");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    if (path[1] === 'updatePost') {
+      getPost(path[2]);
+    }
+  }, [path]);
+
   return (
-    <>
-      <p>Post Editor</p>
-      <Link to="/">뒤로</Link>
-      <form onSubmit={onSubmit}>
-        <div>
-          <input type="text" value={title} onChange={handleTitleChenge} onKeyPress={blockEnterKey} placeholder="제목" autoFocus required />
-        </div>
-        <div>
-          <textarea cols="50" rows="5" value={content} onChange={handleContentChange} />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </>
+    <Layout>
+      <Content className="wrap-content">
+        <Title>Post Editor</Title>
+        <Form onFinish={onFinish}>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "제목을 입력하세요."
+              }
+            ]}>
+            <Input
+              size="large"
+              value={title}
+              onChange={handleTitleChenge}
+              onKeyPress={blockEnterKey}
+              placeholder="제목"
+              autoFocus
+              required
+            />
+          </Form.Item>
+          <Form.Item>
+            <TextArea rows={20} value={content} onChange={handleContentChange} />
+          </Form.Item>
+          <Form.Item>
+            <Link to="/">
+              <Button>뒤로</Button>
+            </Link>
+            <Button type="primary" htmlType="submit">{path[1] === 'newpost' ? '작성' : '수정'}</Button>
+          </Form.Item>
+        </Form>
+      </Content>
+    </Layout>
   )
 }
 

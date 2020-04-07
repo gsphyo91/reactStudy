@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
+import { Layout, Typography, Button, Row } from 'antd';
 
 import { post } from "../../apis/api";
+import PostItem from "./PostItem";
+
+const { Content } = Layout;
+const { Title } = Typography;
 
 const PostList = () => {
   const [postList, setPostList] = useState([]);
@@ -10,21 +15,10 @@ const PostList = () => {
     let posts;
     try {
       ({ data: { results: posts } } = await post.getPostList());
-      console.log(posts);
     } catch (err) {
       console.log(err);
     } finally {
       setPostList(posts)
-    }
-  }
-
-  const deletePost = async (id) => {
-    try{
-      const {data: {message}} = await post.deletePost(id);
-      console.log(message);
-      getPostList();
-    }catch(err) {
-      console.log(err);
     }
   }
 
@@ -33,22 +27,20 @@ const PostList = () => {
   }, [])
 
   return (
-    <>
-      <p>Post List</p>
-      <Link to="/newpost">글쓰기</Link>
-      {postList ? postList.map(post => (
-        <div key={post.id}>
-          <div>
-            <p>{post.id}</p>
-            <Link to={`/detail/${post.id}`}>{post.title}</Link>
-            <p>{post.content}</p>
-          </div>
-          <button>수정</button>
-          <button onClick={() => deletePost(post.id)}>삭제</button>
-        </div>
-      )) : null
-      }
-    </>
+    <Layout>
+      <Content className="wrap-content">
+        <Title variant="h3">Post List</Title>
+        <Button type="primary" className="newPost-btn">
+          <Link to="/newpost" >글쓰기</Link>
+        </Button>
+        <Row gutter={16}>
+          {postList ? postList.map(post => (
+            <PostItem key={post.id} post={post} />
+          )) : null
+          }
+        </Row>
+      </Content>
+    </Layout>
   )
 }
 

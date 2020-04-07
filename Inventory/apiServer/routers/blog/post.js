@@ -7,15 +7,15 @@ const post = require("../../models/post");
 router.get("/", (req, res) => {
   post
     .find()
-    .then(post => {
+    .then((post) => {
       res.status(200).json({
         message: "Success",
-        results: post
+        results: post,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        message: "Fail"
+        message: "Fail",
       });
     });
 });
@@ -24,23 +24,26 @@ router.get("/", (req, res) => {
 router.get("/detail", (req, res) => {
   const postId = req.query.id;
 
-  post.findOne({
-    id: postId
-  }).then(post => {
-    if(!post){
-      res.status(404).json({
-        message: "Not Found Post"
-      })
-    }
-    res.status(200).json({
-      message: "Success",
-      results: post
+  post
+    .findOne({
+      id: postId,
     })
-  }).catch(err => {
-    res.status(500).json({
-      message: "Fail"
+    .then((post) => {
+      if (!post) {
+        res.status(404).json({
+          message: "Not Found Post",
+        });
+      }
+      res.status(200).json({
+        message: "Success",
+        results: post,
+      });
     })
-  })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Fail",
+      });
+    });
 });
 
 // 글 작성
@@ -54,17 +57,15 @@ router.post("/", (req, res) => {
 
   postModel
     .save()
-    .then(newPost => {
+    .then((newPost) => {
       res.status(200).json({
         message: "Success",
-        data: {
-          post: newPost
-        }
+        results: newPost,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        message: "Fail"
+        message: "Fail",
       });
     });
 });
@@ -76,26 +77,64 @@ router.delete("/", (req, res) => {
 
   post
     .deleteOne({
-      id: postId
+      id: postId,
     })
-    .then(post => {
+    .then((post) => {
       if (post.n === 0) {
         res.status(404).json({
-          message: "Not found post"
+          message: "Not found post",
         });
       }
       res.status(200).json({
-        message: "Success"
+        message: "Success",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        message: "Fail"
+        message: "Fail",
       });
     });
 });
 
 // 글 수정
-router.put("/:id", (req, res) => {});
+router.put("/", (req, res) => {
+  const postId = req.query.id;
+  const { title, content } = req.body;
+  console.log(req.query);
+  console.log(req.body);
+
+  post
+    .findOne({
+      id: postId,
+    })
+    .then((targetPost) => {
+      if (!targetPost) {
+        res.status(404).json({
+          message: "Not Found Post",
+        });
+      }
+      targetPost.title = title;
+      targetPost.content = content;
+
+      targetPost
+        .save()
+        .then((newPost) => {
+          res.status(200).json({
+            message: "Success",
+            results: newPost,
+          });
+        })
+        .catch((err) => {
+          res.status(500).json({
+            message: "Fail",
+          });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Fail",
+      });
+    });
+});
 
 module.exports = router;
