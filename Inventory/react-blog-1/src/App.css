@@ -1,14 +1,9 @@
-.wrap-content{
+.container-content{
   background-color: white;
   padding: 20px;
   height: 100%;
 }
 /* PostList.jsx */
-.newPost-btn{
-  display: block;
-  align-items: flex-end;
-  justify-content: end;
-}
 
 /* PostItem.jsx */
 .post-item{
@@ -16,6 +11,23 @@
 }
 
 /* PostDetail.jsx */
+.wrap-content{
+  margin: 40px;
+}
 .content{
   white-space: pre-line;
+}
+
+/* PostEditor.jsx */ 
+
+
+/* Editor.jsx */
+.input{
+  /* border: none; */
+  width: 100%;
+  resize: none;
+  overflow-y: hidden;
+}
+.input:focus{
+  outline: none;
 }

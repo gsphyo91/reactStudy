@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Layout, Typography, Button, Input, Form } from "antd";
 
@@ -14,7 +14,6 @@ const PostEditor = () => {
   const history = useHistory();
   const location = useLocation();
   const [path] = useState(location.pathname.split('/'));
-  const wrapper = useRef(null);
 
   const handleTitleChenge = (e) => {
     setTitle(e.target.value);
@@ -74,7 +73,7 @@ const PostEditor = () => {
 
   return (
     <Layout>
-      <Content className="wrap-content">
+      <Content className="container-content">
         <Title>Post Editor</Title>
         <Form onFinish={onFinish}>
           <Form.Item
@@ -95,7 +94,7 @@ const PostEditor = () => {
             />
           </Form.Item>
           <Form.Item>
-            <TextArea rows={20} value={content} onChange={handleContentChange} />
+            <TextArea rows="30" onChange={handleContentChange} />
           </Form.Item>
           <Form.Item>
             <Link to="/">

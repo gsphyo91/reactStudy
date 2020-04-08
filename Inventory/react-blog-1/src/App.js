@@ -7,6 +7,7 @@ import './App.css';
 import PostList from "./components/blog/PostList";
 import PostEditor from "./components/blog/PostEditor";
 import PostDetail from "./components/blog/PostDetail";
+import Editor from "./components/blog/Editor";
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
         </Route>
         <Route path="/detail">
           <PostDetail />
+        </Route>
+        <Route path="/editor">
+          <Editor />
         </Route>
       </Switch>
     </BrowserRouter>

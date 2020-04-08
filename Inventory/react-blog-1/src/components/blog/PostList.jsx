@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"
-import { Layout, Typography, Button, Row } from 'antd';
+import { Layout, Typography, Button, Row, Col } from 'antd';
+import { FormOutlined } from "@ant-design/icons";
 
 import { post } from "../../apis/api";
 import PostItem from "./PostItem";
@@ -28,11 +29,17 @@ const PostList = () => {
 
   return (
     <Layout>
-      <Content className="wrap-content">
-        <Title variant="h3">Post List</Title>
-        <Button type="primary" className="newPost-btn">
-          <Link to="/newpost" >글쓰기</Link>
-        </Button>
+      <Content className="container-content">
+        <Row>
+          <Col span={12}>
+            <Title variant="h3">Post List</Title>
+          </Col>
+          <Col span={12} style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+            <Button type="primary">
+              <Link to="/newpost" ><FormOutlined /> 글쓰기</Link>
+            </Button>
+          </Col>
+        </Row>
         <Row gutter={16}>
           {postList ? postList.map(post => (
             <PostItem key={post.id} post={post} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useHistory } from "react-router-dom";
-import { Layout, Button, Typography } from "antd";
+import { Layout, Button, Typography, Row, Col, Divider } from "antd";
 
 import { post } from "../../apis/api";
 
@@ -43,12 +43,21 @@ const PostDetail = () => {
 
   return (
     <Layout>
-      <Content className="wrap-content">
-        <Link to="/"><Button>뒤로</Button></Link>
-        <Title>{title}</Title>
-        <Title level={4} className="content">{content}</Title>
-        <Link to={`/updatePost/${postId}`}><Button>수정</Button></Link>
-        <Button type="danger" onClick={() => deletePost(postId)}>삭제</Button>
+      <Content className="container-content">
+        <Row>
+          <Col span={12}>
+            <Link to="/"><Button>뒤로</Button></Link>
+          </Col>
+          <Col span={12} style={{ textAlign: "end" }}>
+            <Link to={`/updatePost/${postId}`}><Button>수정</Button></Link>
+            <Button type="danger" onClick={() => deletePost(postId)} style={{marginLeft: 15}}>삭제</Button>
+          </Col>
+        </Row>
+        <div className="wrap-content">
+          <Title>{title}</Title>
+          <Divider/>
+          <Title level={4} className="content">{content}</Title>
+        </div>
       </Content>
     </Layout>
   )
