@@ -22,12 +22,25 @@
 
 
 /* Editor.jsx */
-.input{
-  /* border: none; */
+.editor-title{
   width: 100%;
-  resize: none;
-  overflow-y: hidden;
+  font-weight: bold;
+  font-size: 32px;
+  margin-bottom: 15px;
+  border: none;
+  color: black;
 }
-.input:focus{
+.editor-title::placeholder,
+.input::placeholder{
+  color: #cccccc;
+}
+.input{
+  width: 100%;
+  height: 28px;
+  color: black;
+  resize: none;
+}
+.input:focus,
+.editor-title:focus{
   outline: none;
 }
