@@ -1,5 +1,7 @@
-import React, { useState, Fragment, useRef, createRef } from "react";
+import React, { useState, useRef, createRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+
+import { InitialEl, Header1El } from "./elements/inputElements";
 
 const initial_style = `
   font-size: 14px;
@@ -14,7 +16,7 @@ const heading1_style = `
 const heading2_style = `
   font-size: 1.5em;
   font-weight: 600;
-`
+`;
 
 const heading3_style = `
   font-size: 1.25em;
@@ -25,33 +27,33 @@ const Editor = () => {
   const inputFocus = useRef([createRef()]);
   const [textFields, setTextFields] = useState([
     {
-      type: "",
+      type: "init",
       data: "",
     },
   ]);
 
   const handleInputChange = (index, event) => {
     const values = [...textFields];
-    values[index].data = event.target.value;
-    if (event.target.value === "# ") {
+    const inputText = event.target.value;
+    values[index].data = inputText;
+    console.log("test");
+    console.log(event.target.value);
+    if (inputText.slice(0, 2) === "# ") {
       inputFocus.current[index].current.style = heading1_style;
       values[index].type = "h1";
       values[index].data = "";
       setTextFields(values);
-    }
-    else if (event.target.value === "## "){
+    } else if (inputText.slice(0, 3) === "## ") {
       inputFocus.current[index].current.style = heading2_style;
       values[index].type = "h2";
       values[index].data = "";
       setTextFields(values);
-    } 
-    else if (event.target.value === "### "){
+    } else if (inputText.slice(0, 4) === "### ") {
       inputFocus.current[index].current.style = heading3_style;
       values[index].type = "h2";
       values[index].data = "";
       setTextFields(values);
-    } 
-    else {
+    } else {
       setTextFields(values);
     }
   };
@@ -101,31 +103,78 @@ const Editor = () => {
       <p>Editor</p>
       <input type="text" className="editor-title" placeholder="Untitled" />
       <TextareaAutosize />
-      {textFields.map((textField, index) => (
-        <Fragment key={`${textField}~${index}`}>
-          <TextareaAutosize
-            className="input"
-            placeholder="Input here"
-            name={`input${index}`}
-            value={textField.data}
-            onChange={(event) => handleInputChange(index, event)}
-            onKeyDown={(event) => {
-              if (!event.shiftKey && event.key === "Enter") {
-                event.preventDefault();
-                return handleAddFields();
-              // } else if (event.shiftKey && event.key === "Enter") {
-              //   return handleLine(index, event);
-              } else if (event.key === "Backspace") {
-                return handleRemoveFields(index, event);
-              }else{
-                console.log(event.key);
-              }
-            }}
-            inputRef={inputFocus.current[index]}
-            autoFocus
-          />
-        </Fragment>
-      ))}
+      {textFields.map((textField, index) => {
+        if (textField.type === "init") {
+          return (
+            <InitialEl
+              key={`${textField}~${index}`}
+              name={`input${index}`}
+              value={textField.data}
+              onChange={(event) => handleInputChange(index, event)}
+              onKeyDown={(event) => {
+                if (!event.shiftKey && event.key === "Enter") {
+                  event.preventDefault();
+                  return handleAddFields();
+                  // } else if (event.shiftKey && event.key === "Enter") {
+                  //   return handleLine(index, event);
+                } else if (event.key === "Backspace") {
+                  return handleRemoveFields(index, event);
+                } else {
+                  // console.log(event.key);
+                }
+              }}
+              inputRef={inputFocus.current[index]}
+            />
+          );
+        } else if (textField.type === "h1") {
+          return (
+            <Header1El
+              key={`${textField}~${index}`}
+              name={`input${index}`}
+              value={textField.data}
+              onChange={(event) => handleInputChange(index, event)}
+              onKeyDown={(event) => {
+                if (!event.shiftKey && event.key === "Enter") {
+                  event.preventDefault();
+                  return handleAddFields();
+                  // } else if (event.shiftKey && event.key === "Enter") {
+                  //   return handleLine(index, event);
+                } else if (event.key === "Backspace") {
+                  return handleRemoveFields(index, event);
+                } else {
+                  // console.log(event.key);
+                }
+              }}
+              inputRef={inputFocus.current[index]}
+            />
+          );
+        } else {
+          return (
+            <TextareaAutosize
+              key={`${textField}~${index}`}
+              className="input"
+              placeholder="Input here"
+              name={`input${index}`}
+              value={textField.data}
+              onChange={(event) => handleInputChange(index, event)}
+              onKeyDown={(event) => {
+                if (!event.shiftKey && event.key === "Enter") {
+                  event.preventDefault();
+                  return handleAddFields();
+                  // } else if (event.shiftKey && event.key === "Enter") {
+                  //   return handleLine(index, event);
+                } else if (event.key === "Backspace") {
+                  return handleRemoveFields(index, event);
+                } else {
+                  // console.log(event.key);
+                }
+              }}
+              inputRef={inputFocus.current[index]}
+              autoFocus
+            />
+          );
+        }
+      })}
     </div>
   );
 };
