@@ -18,13 +18,7 @@ const Chime = () => {
   const [videoInputDeviceInfo, setVideoInputDeviceInfo] = useState({});
   const [cameraStatus, setCameraStatus] = useState(false);
   const [audioStatus, setAudioStatus] = useState(false);
-  // const [observer, setObserver] = useState({
-  //   audioInputChanged: freshAudioInputDeviceList => {
-  //     freshAudioInputDeviceList.map(mediaDeviceInfo => {
-
-  //     })
-  //   }
-  // })
+  const [audioMuted, setAudioMuted] = useState(false);
 
   const audioRef = useRef(null);
   const videoRef = useRef(null);
@@ -66,24 +60,40 @@ const Chime = () => {
     console.log(audioOutputDeviceInfo);
 
     if (audioStatus) {
-      await meetingSession.audioVideo.chooseAudioInputDevice(null);
-      await meetingSession.audioVideo.chooseAudioOutputDevice(null);
-      stopAudioSession();
-      setAudioStatus(false);
+      try{
+        await meetingSession.audioVideo.chooseAudioInputDevice(null);
+        await meetingSession.audioVideo.chooseAudioOutputDevice(null);
+        stopAudioSession();
+        setAudioStatus(false);
+      } catch (err) {
+        console.log(`err!!! ${err}`);
+      }
     } else {
-      await meetingSession.audioVideo.chooseAudioInputDevice(audioInputDeviceInfo.deviceId);
-      await meetingSession.audioVideo.chooseAudioOutputDevice(audioOutputDeviceInfo.deviceId);
-      startAudioSession();
-      setAudioStatus(true);
+      try {
+        await meetingSession.audioVideo.chooseAudioInputDevice(audioInputDeviceInfo.deviceId);
+        await meetingSession.audioVideo.chooseAudioOutputDevice(audioOutputDeviceInfo.deviceId);
+        startAudioSession();
+        setAudioStatus(true);
+      } catch (err) {
+        console.log(`err!!! ${err}`);
+      }
+
     }
   }
 
   const startAudioSession = () => {
     const audioElement = audioRef.current;
+    console.log(audioElement);
     meetingSession.audioVideo.bindAudioElement(audioElement);
     const observer = {
-      audioVideoDidStart : () => {
+      audioVideoDidStart: () => {
         console.log("Audio Started!!!!!!!");
+      },
+      audioVideoDidStop: sessionStatus => {
+        console.log(`Stopped with ad session status code: ${sessionStatus.statusCode()}`);
+      },
+      audioVideoDidStartConnecting: reconnecting => {
+        console.log(`Attempting to reconnect`);
       }
     };
     meetingSession.audioVideo.addObserver(observer);
@@ -91,7 +101,7 @@ const Chime = () => {
   }
 
   const stopAudioSession = () => {
-    
+    meetingSession.audioVideo.stop();
   }
 
   const onToggleCamera = async () => {
@@ -153,20 +163,21 @@ const Chime = () => {
     <div>
       <div>
         <p>Chime</p>
-        <button onClick={getMeetingInfo}>get Meeting</button>
+        <button onClick={getMeetingInfo}>1. Create Meeting</button>
         {/* {console.log(meetingResponse.Meeting)} */}
         {/* {console.log(attendeeResponse.Attendee)} */}
         <p>Meeting ID : {meetingResponse.Meeting ? meetingResponse.Meeting.MeetingId : null}</p>
         <p>Attendee ID : {attendeeResponse.Attendee ? attendeeResponse.Attendee.AttendeeId : null}</p>
-        <button onClick={configureSession}>Session</button>
-        <button onClick={onToggleAudio}>Audio {audioStatus ? 'Off' : 'On'}</button>
+        <button onClick={configureSession}>2. Session</button>
+        <button onClick={onToggleAudio}>3. Audio {audioStatus ? 'Off' : 'On'}</button>
+        {/* <button onClick={}>{audioMuted ? "UnMute" : "Mute"}</button> */}
         {/* <button onClick={onToggleCamera}>Camera {cameraStatus ? 'Off' : 'On'}</button> */}
 
       </div>
       {/* {cameraStatus ? <video className="video-test" ref={videoRef}></video>: null} */}
       <div>
         {/* <video className="video-test" ref={videoRef}></video> */}
-        <audio ref={audioRef}></audio>
+        <audio id="audio-test" ref={audioRef}></audio>
       </div>
     </div>
   )

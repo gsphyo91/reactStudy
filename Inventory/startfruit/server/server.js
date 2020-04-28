@@ -46,7 +46,7 @@ chime.endpoint = new AWS.Endpoint(
 const meetingCache = {};
 const attendeeCache = {};
 
-const appName = "chime";
+// const appName = "chime";
 // const requestId = uuid();
 // const region = "us-west-2";
 
