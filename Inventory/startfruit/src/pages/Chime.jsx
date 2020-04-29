@@ -25,22 +25,21 @@ const Chime = () => {
   const audioRef = useRef(null);
   const videoRef = useRef(null);
 
-  const logger = new ConsoleLogger('MyLogger', LogLevel.INFO);
-  const deviceController = new DefaultDeviceController(logger);
-
   const getMeetingInfo = async () => {
     let joinInfo;
     try {
       ({ data: { data: { JoinInfo: joinInfo } } } = await requestAPI.meeting("test"))
       console.log(joinInfo);
-    } catch (err) {
-      console.log(err);
-    } finally {
       setMeetingResponse(joinInfo.Meeting);
       setAttendeeResponse(joinInfo.Attendee);
+    } catch (err) {
+      console.log(err);
     }
   }
   const configureSession = async () => {
+    const logger = new ConsoleLogger('MyLogger', LogLevel.INFO);
+    const deviceController = new DefaultDeviceController(logger);
+    console.log(meetingResponse);
     const configuration = new MeetingSessionConfiguration(meetingResponse, attendeeResponse);
     console.log(configuration);
 
