@@ -1,14 +1,14 @@
 import React from "react";
-import ReactPlayer from 'react-player';
+// import ReactPlayer from 'react-player';
 
-import { STREAM_URL } from '../config/url';
+// import { STREAM_URL } from '../config/url';
 
 const StarFruit = () => {
 
   return (
     <div className="app">
-      <p>Star Fruit</p>
-      <ReactPlayer url={STREAM_URL} playing/>
+      {/* <ReactPlayer url={STREAM_URL} playing/> */}
+      <div className="header">header</div>
     </div>
   )
 }
